@@ -14,15 +14,13 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-// ── In-memory logs (no database needed) ────────────
+// ── In-memory logs ──────────────────────────────────
 const callLogs = []
 const smsLogs  = []
-const bugLogs  = []
+const bugLogs = []
 
 // ── 1. Make a call ─────────────────────────────────
-
 app.post('/api/call', async (req, res) => {
-    console.log('call endpoint hit', req.body)
   const { to } = req.body
 
   try {
@@ -30,8 +28,9 @@ app.post('/api/call', async (req, res) => {
       to:   to,
       from: process.env.TWILIO_PHONE_NUMBER,
       twiml: '<Response><Say>Hello! This is your support simulator.</Say></Response>',
-      statusCallback: 'https://shredder-designate-arrest.ngrok-free.dev/webhook/call-status',
-  statusCallbackMethod: 'POST'
+      statusCallback: `${process.env.NGROK_URL}/webhook/call-status`,
+      statusCallbackMethod: 'POST',
+      statusCallbackEvent: ['initiated', 'ringing', 'answered', 'completed']
     })
 
     const log = { sid: call.sid, to, status: call.status, time: new Date() }
@@ -39,24 +38,22 @@ app.post('/api/call', async (req, res) => {
 
     res.json({ success: true, data: log })
 
-  }  catch (err) {
-    console.log('Twilio error:', err.message)
+  } catch (err) {
+    console.log('Twilio call error:', err.message)
     res.json({ success: false, error: err.message })
   }
 })
+
 // ── 2. Send SMS ─────────────────────────────────────
 app.post('/api/sms', async (req, res) => {
-    console.log('sms endpoint hit', req.body)
   const { to, message } = req.body
 
   try {
     const sms = await client.messages.create({
-        
       body: message,
       to:   to,
       from: process.env.TWILIO_PHONE_NUMBER,
-      statusCallback: 'https://shredder-designate-arrest.ngrok-free.dev/webhook/sms-status'
-
+      statusCallback: `${process.env.NGROK_URL}/webhook/sms-status`
     })
 
     const log = { sid: sms.sid, to, message, status: sms.status, time: new Date() }
@@ -64,10 +61,10 @@ app.post('/api/sms', async (req, res) => {
 
     res.json({ success: true, data: log })
 
-  }  catch (err) {
-  console.log('SMS error:', err.message)
-  res.json({ success: false, error: err.message })
-}
+  } catch (err) {
+    console.log('Twilio SMS error:', err.message)
+    res.json({ success: false, error: err.message })
+  }
 })
 
 // ── 3. Get all logs ─────────────────────────────────
@@ -80,28 +77,30 @@ app.get('/api/logs', (req, res) => {
 
 // ── 4. Submit a bug ─────────────────────────────────
 app.post('/api/bugs', (req, res) => {
-  const { title, category, severity, description } = req.body
+  console.log('Received bug report:', req.body)
+  const { title, severity, description } = req.body
 
+  // video map — you'll replace these URLs with your real Loom links later
   const videoMap = {
-    'Voice':   'https://loom.com/your-voice-video',
-    'SMS':     'https://loom.com/your-sms-video',
-    'API':     'https://loom.com/your-api-video',
-    'Webhook': 'https://loom.com/your-webhook-video',
+    "Invalid 'To' Phone Number":   'https://www.loom.com/share/824325de61844eae8872e0955181a588',
+    'Authentication Failed':     'https://www.loom.com/share/f800d06a58044c6c8a2fa7ae94f8c70d',
+    'TwiML Parse Error':     'https://www.loom.com/share/36723f6c464341c9a5a95478bb8f03bd',
+    'Webhook Not Firing': 'https://www.loom.com/share/b55dbbda5f224359ada122a2c40c0cdb',
   }
 
   const bug = {
-    id:       bugLogs.length + 1,
+    id:          bugLogs.length + 1,
     title,
-    category,
     severity,
     description,
-    videoUrl: videoMap[category] || 'https://loom.com/general',
-    time:     new Date()
+    videoUrl:    videoMap[title] || 'https://loom.com/share/folder/e19d7059506d436c860a21637b96a8cc',
+    time:        new Date()
   }
 
   bugLogs.push(bug)
   res.json({ success: true, data: bug })
 })
+
 
 // ── 5. Call status webhook ──────────────────────────
 app.post('/webhook/call-status', (req, res) => {
@@ -130,5 +129,6 @@ app.post('/webhook/sms-status', (req, res) => {
   res.sendStatus(200)
 })
 
+// ── Start server ────────────────────────────────────
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

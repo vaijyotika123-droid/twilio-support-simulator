@@ -16,7 +16,6 @@ export default function SmsPage() {
     setResult(null)
 
     try {
-        console.log('sending API message to', `${API}/api/sms`, { to, message })
       const res = await axios.post(`${API}/api/sms`, { to, message })
       setResult(res.data.data)
     } catch (err) {
@@ -26,52 +25,88 @@ export default function SmsPage() {
     }
   }
 
-  const templates = [
-    'Your ticket has been opened. We will respond within 24 hours.',
-    'Your issue has been resolved. Please let us know if you need anything else.',
-    'Following up on your recent support request. Is everything working?'
-  ]
 
   return (
     <div>
-      <h1 style={{ color: '#1A1A2E', marginBottom: '30px' }}>💬 Send SMS</h1>
+      <h2 style={{ color: '#1A1A2E', marginBottom: '30px' }}>Send SMS</h2>
 
-      <div style={{ background: 'white', padding: '30px', borderRadius: '10px', maxWidth: '500px' }}>
-        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Phone Number</label>
-        <input
-          type="text"
-          placeholder="+91XXXXXXXXXX"
-          value={to}
-          onChange={e => setTo(e.target.value)}
-          style={{ width: '100%', padding: '10px', fontSize: '15px', borderRadius: '6px', border: '1px solid #ddd', marginBottom: '15px' }}
-        />
+      <div style={{ marginBottom: '24px' }}>
+  <label
+    style={{
+      display: 'block',
+      marginBottom: '8px',
+      fontSize: '14px',
+      fontWeight: '600',
+      color: '#111827'
+    }}
+  >
+    Phone Number
+  </label>
 
-        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>Message</label>
-        <textarea
-          placeholder="Type your message..."
-          value={message}
-          onChange={e => setMessage(e.target.value)}
-          rows={4}
-          style={{ width: '100%', padding: '10px', fontSize: '15px', borderRadius: '6px', border: '1px solid #ddd', marginBottom: '5px' }}
-        />
-        <p style={{ fontSize: '12px', color: message.length > 160 ? 'red' : '#888', marginBottom: '15px' }}>
-          {message.length}/160 characters
-        </p>
+  <input
+    type="text"
+    placeholder="+91XXXXXXXXXX"
+    value={to}
+    onChange={e => setTo(e.target.value)}
+    style={{
+      width: '50%',
+      maxWidth: '450px',
+      padding: '12px 16px',
+      border: '1px solid #D1D5DB',
+      borderRadius: '8px',
+      fontSize: '14px',
+      color: '#111827',
+      backgroundColor: '#FFFFFF',
+      boxSizing: 'border-box',
+      colorScheme: 'light'
+    }}
+    />
+  </div>
 
-        {/* Templates */}
-        <p style={{ fontWeight: 'bold', marginBottom: '8px' }}>Quick Templates:</p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '15px' }}>
-          {templates.map((t, i) => (
-            <button
-              key={i}
-              onClick={() => setMessage(t)}
-              style={{ background: '#EEF2FF', border: 'none', padding: '8px', borderRadius: '6px', cursor: 'pointer', textAlign: 'left', fontSize: '12px' }}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
+        <label
+  style={{
+    display: 'block',
+    marginBottom: '8px',
+    fontWeight: '600',
+    fontSize: '14px',
+    color: '#111827'
+  }}
+>
+  Message
+</label>
 
+<textarea
+  placeholder="Type your message..."
+  value={message}
+  onChange={e => setMessage(e.target.value)}
+  rows={5}
+  style={{
+    width: '50%',
+    maxWidth: '450px',
+    padding: '12px',
+    fontSize: '14px',
+    color: '#111827',
+    backgroundColor: '#FFFFFF',
+    borderRadius: '8px',
+    border: '1px solid #D1D5DB',
+    colorScheme: 'light',
+    boxSizing: 'border-box',
+    resize: 'vertical'
+  }}
+/>
+
+<p
+  style={{
+    fontSize: '12px',
+    color: message.length > 160 ? '#DC2626' : '#6B7280',
+    marginTop: '6px',
+    marginBottom: '20px'
+  }}
+>
+  {message.length}/160 characters
+</p>
+
+      
         <button
           onClick={sendSms}
           disabled={loading || !to || !message}
@@ -94,6 +129,6 @@ export default function SmsPage() {
           </div>
         )}
       </div>
-    </div>
+    
   )
 }

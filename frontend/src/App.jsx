@@ -10,23 +10,23 @@ export default function App() {
 
         {/* Sidebar */}
         <div style={{ width: '200px', background: '#1A1A2E', padding: '20px' }}>
-          <h2 style={{ color: 'white', marginBottom: '30px' }}>🚀 Support Sim</h2>
+          <h2 style={{ color: 'white', marginBottom: '30px' }}>Support Stimulator</h2>
           <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <NavLink to="/call" style={({ isActive }) => ({
               color: isActive ? '#F22F46' : 'white',
               textDecoration: 'none',
               fontSize: '15px'
-            })}>📞 Call</NavLink>
+            })}>Initiate Call</NavLink>
             <NavLink to="/sms" style={({ isActive }) => ({
               color: isActive ? '#F22F46' : 'white',
               textDecoration: 'none',
               fontSize: '15px'
-            })}>💬 SMS</NavLink>
+            })}>GenerateSMS</NavLink>
             <NavLink to="/bugs" style={({ isActive }) => ({
               color: isActive ? '#F22F46' : 'white',
               textDecoration: 'none',
               fontSize: '15px'
-            })}>🐛 Bug Reporter</NavLink>
+            })}>Bug Reporter</NavLink>
           </nav>
         </div>
 

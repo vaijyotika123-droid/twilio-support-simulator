@@ -6,7 +6,9 @@
   background: var(--accent-bg);
   border: 2px solid transparent;
   transition: border-color 0.3s;
+  color-scheme: light;
   margin-bottom: 24px;
+  
 
   &:hover {
     border-color: var(--accent-border);

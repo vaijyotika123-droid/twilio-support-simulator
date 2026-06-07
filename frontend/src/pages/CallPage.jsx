@@ -10,13 +10,11 @@ export default function CallPage() {
   const [error, setError]     = useState(null)
 
   const makeCall = async () => {
-    console.log('button clicked', to)
     setLoading(true)
     setError(null)
     setResult(null)
 
     try {
-        console.log('making API call to', `${API}/api/call`)
       const res = await axios.post(`${API}/api/call`, { to })
       setResult(res.data.data)
     } catch (err) {
@@ -28,20 +26,42 @@ export default function CallPage() {
 
   return (
     <div>
-      <h1 style={{ color: '#1A1A2E', marginBottom: '30px' }}>📞 Initiate Call</h1>
+      <h2 style={{ color: '#1A1A2E', marginBottom: '30px' }}>Initiate Call</h2>
 
-      <div style={{ background: 'white', padding: '30px', borderRadius: '10px', maxWidth: '500px' }}>
-        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
-          Phone Number
-        </label>
-        <input
-          type="text"
-          placeholder="+91XXXXXXXXXX"
-          value={to}
-          onChange={e => setTo(e.target.value)}
-          style={{ width: '100%', padding: '10px', fontSize: '15px', borderRadius: '6px', border: '1px solid #ddd', marginBottom: '15px' }}
-        />
+      <div style={{ marginBottom: '24px' }}>
+  <label
+    style={{
+      display: 'block',
+      marginBottom: '8px',
+      fontSize: '14px',
+      fontWeight: '600',
+      color: '#111827'
+    }}
+  >
+    Phone Number
+  </label>
 
+  <input
+    type="text"
+    placeholder="+91XXXXXXXXXX"
+    value={to}
+    onChange={e => setTo(e.target.value)}
+    style={{
+      width: '50%',
+      maxWidth: '350px',
+      padding: '12px 16px',
+      border: '1px solid #D1D5DB',
+      borderRadius: '8px',
+      fontSize: '14px',
+      color: '#111827',
+      backgroundColor: '#FFFFFF',
+      boxSizing: 'border-box',
+      colorScheme: 'light'
+    }}
+    />
+  </div>
+
+       
         <button
           onClick={makeCall}
           disabled={loading || !to}
@@ -67,6 +87,6 @@ export default function CallPage() {
           </div>
         )}
       </div>
-    </div>
+    
   )
 }
